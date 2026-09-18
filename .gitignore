@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+build/
+
+# env
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+npm-debug.log*
+
+# ide
+.vscode/
+.idea/
+
+# os
+.DS_Store
+Thumbs.db
+
+# coverage
+coverage/
+
+# prisma
+src/prisma/migrations/dev.db
+
+# docker volumes (if any local bind mounts are added)
+docker/data/
+
+# local media storage (LocalStorageProvider)
+uploads/

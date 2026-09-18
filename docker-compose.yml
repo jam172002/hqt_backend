@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hqt_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hqt
+      POSTGRES_PASSWORD: hqt_dev_password
+      POSTGRES_DB: hqt_dev
+    ports:
+      # Host port 5433, not 5432: this machine already has a native
+      # PostgreSQL service bound to 5432, which silently swallows the
+      # container's port mapping if left on 5432.
+      - "5433:5432"
+    volumes:
+      - hqt_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hqt -d hqt_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: hqt_redis
+    restart: unless-stopped
+    ports:
+      # Host port 6380, not 6379: something else on this machine already
+      # listens on 6379 (loopback-only) - side-stepping it now avoids the
+      # same silent-port-shadowing trap hit with Postgres above.
+      - "6380:6379"
+    volumes:
+      - hqt_redis_data:/data
+
+volumes:
+  hqt_postgres_data:
+  hqt_redis_data:
