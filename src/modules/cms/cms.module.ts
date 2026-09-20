@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { FaqsController } from './faqs.controller';
 import { FaqsService } from './faqs.service';
+import { SiteContentController } from './site-content/site-content.controller';
+import { SiteContentService } from './site-content/site-content.service';
 import { TestimonialsController } from './testimonials.controller';
 import { TestimonialsService } from './testimonials.service';
 import { WebsiteContentController } from './website-content.controller';
@@ -12,7 +14,7 @@ import { WebsiteContentService } from './website-content.service';
  * their own domains - website_content is deliberately not a catch-all.
  */
 @Module({
-  controllers: [TestimonialsController, FaqsController, WebsiteContentController],
-  providers: [TestimonialsService, FaqsService, WebsiteContentService],
+  controllers: [TestimonialsController, FaqsController, WebsiteContentController, SiteContentController],
+  providers: [TestimonialsService, FaqsService, WebsiteContentService, SiteContentService],
 })
 export class CmsModule {}
