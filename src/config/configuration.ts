@@ -18,6 +18,12 @@ export interface AppConfig {
     bucket?: string;
     localPath: string;
     maxUploadBytes: number;
+    s3: {
+      endpoint?: string;
+      region: string;
+      accessKeyId?: string;
+      secretAccessKey?: string;
+    };
   };
 }
 
@@ -43,5 +49,11 @@ export default (): AppConfig => ({
     bucket: process.env.STORAGE_BUCKET,
     localPath: process.env.STORAGE_LOCAL_PATH ?? './uploads',
     maxUploadBytes: parseInt(process.env.STORAGE_MAX_UPLOAD_BYTES ?? String(10 * 1024 * 1024), 10),
+    s3: {
+      endpoint: process.env.S3_ENDPOINT,
+      region: process.env.S3_REGION ?? 'auto',
+      accessKeyId: process.env.S3_ACCESS_KEY_ID,
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    },
   },
 });

@@ -1,5 +1,7 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import type { MediaAttachment, MediaFile } from '@prisma/client';
+import type { AppConfig } from '../../../config/configuration';
 import { randomUUID } from 'node:crypto';
 import * as path from 'node:path';
 import { STORAGE_PROVIDER, type StorageProvider } from '../../../integrations/storage/storage-provider.interface';
@@ -19,6 +21,7 @@ export class MediaService {
   constructor(
     private readonly prisma: PrismaService,
     @Inject(STORAGE_PROVIDER) private readonly storage: StorageProvider,
+    private readonly config: ConfigService<AppConfig, true>,
   ) {}
 
   async upload(
@@ -37,7 +40,7 @@ export class MediaService {
 
     const mediaFile = await this.prisma.mediaFile.create({
       data: {
-        storageProvider: 'local',
+        storageProvider: this.config.get('storage.provider', { infer: true }),
         storageKey,
         originalName: file.originalname,
         mimeType: file.mimetype,

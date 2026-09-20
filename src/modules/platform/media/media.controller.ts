@@ -70,6 +70,9 @@ export class MediaController {
     const { buffer, mediaFile } = await this.mediaService.getContent(user, id);
     res.setHeader('Content-Type', mediaFile.mimeType);
     res.setHeader('Content-Disposition', `inline; filename="${mediaFile.originalName}"`);
+    if (mediaFile.visibility === 'PUBLIC') {
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+    }
     res.send(buffer);
   }
 

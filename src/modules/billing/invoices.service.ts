@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { Invoice, InvoiceItem } from '@prisma/client';
+import type { Invoice, InvoiceItem, InvoiceStatus } from '@prisma/client';
 import { randomBytes } from 'node:crypto';
 import {
   buildPaginationMeta,
@@ -63,11 +63,12 @@ export class InvoicesService {
     return this.toResponse(invoice);
   }
 
-  async list(page: number, limit: number): Promise<PaginatedResult<InvoiceResponse>> {
+  async list(page: number, limit: number, status?: InvoiceStatus): Promise<PaginatedResult<InvoiceResponse>> {
     const { skip, take } = toSkipTake(page, limit);
+    const where = status ? { status } : {};
     const [rows, total] = await this.prisma.$transaction([
-      this.prisma.invoice.findMany({ skip, take, orderBy: { createdAt: 'desc' }, include: WITH_ITEMS }),
-      this.prisma.invoice.count(),
+      this.prisma.invoice.findMany({ where, skip, take, orderBy: { createdAt: 'desc' }, include: WITH_ITEMS }),
+      this.prisma.invoice.count({ where }),
     ]);
     return {
       data: rows.map((row) => this.toResponse(row)),

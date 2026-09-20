@@ -20,7 +20,11 @@ export const configValidationSchema = Joi.object({
 
   REDIS_URL: Joi.string().uri().optional(),
 
-  STORAGE_PROVIDER: Joi.string().default('local'),
+  STORAGE_PROVIDER: Joi.string().valid('local', 's3').default('local'),
+  S3_ENDPOINT: Joi.string().uri().optional(),
+  S3_REGION: Joi.string().default('auto'),
+  S3_ACCESS_KEY_ID: Joi.string().optional(),
+  S3_SECRET_ACCESS_KEY: Joi.string().optional(),
   STORAGE_BUCKET: Joi.string().optional(),
   STORAGE_LOCAL_PATH: Joi.string().default('./uploads'),
   STORAGE_MAX_UPLOAD_BYTES: Joi.number().default(10 * 1024 * 1024),

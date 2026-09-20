@@ -5,6 +5,7 @@ import { PaginationQueryDto } from '../../common/pagination/pagination.dto';
 import { ROLE_CODES } from '../auth/constants/roles.constant';
 import type { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './dto/invoice.dto';
+import { InvoiceQueryDto } from './dto/invoice-query.dto';
 import { RecordPaymentDto } from './dto/payment.dto';
 import { InvoicesService } from './invoices.service';
 import { PaymentsService } from './payments.service';
@@ -26,8 +27,8 @@ export class InvoicesController {
 
   @Roles(...ADMIN_ROLES)
   @Get()
-  list(@Query() query: PaginationQueryDto) {
-    return this.invoicesService.list(query.page, query.limit);
+  list(@Query() query: InvoiceQueryDto) {
+    return this.invoicesService.list(query.page, query.limit, query.status);
   }
 
   @Roles(ROLE_CODES.STUDENT)

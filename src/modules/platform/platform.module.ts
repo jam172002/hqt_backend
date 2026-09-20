@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import type { AppConfig } from '../../config/configuration';
 import { LocalStorageProvider } from '../../integrations/storage/local-storage.provider';
+import { S3StorageProvider } from '../../integrations/storage/s3-storage.provider';
 import { STORAGE_PROVIDER } from '../../integrations/storage/storage-provider.interface';
 import { AuditController } from './audit/audit.controller';
 import { AuditInterceptor } from './audit/audit.interceptor';
@@ -19,7 +22,14 @@ import { SettingsService } from './settings/settings.service';
 @Module({
   controllers: [MediaController, AuditController, SettingsController],
   providers: [
-    { provide: STORAGE_PROVIDER, useClass: LocalStorageProvider },
+    {
+      provide: STORAGE_PROVIDER,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<AppConfig, true>) =>
+        config.get('storage.provider', { infer: true }) === 's3'
+          ? new S3StorageProvider(config)
+          : new LocalStorageProvider(config),
+    },
     MediaService,
     AuditService,
     SettingsService,
